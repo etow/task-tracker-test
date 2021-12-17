@@ -39,9 +39,9 @@ export default {
     commit(ADD_TASK, task);
     return taskRepository.create(task);
   },
-  [DELETE_TASK]: ({ commit, state }, task) => {
+  [DELETE_TASK]: ({ commit, state }, {task, category}) => {
     commit(BACKUP_STATE, state);
-    commit(DELETE_TASK, task);
+    commit(DELETE_TASK, {task, category});
     commit(SET_TASK_TO_EDIT, {});
     return taskRepository.delete(task.id);
   },
