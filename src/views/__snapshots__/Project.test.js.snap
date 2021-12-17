@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project.vue It renders correctly 1`] = `
+<board-stub></board-stub>
+<edit-task-stub></edit-task-stub>
+`;

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateNewTask.vue It renders correctly 1`] = `
+<div class="create-new-task"><input modelvalue="" type="text" style="display: none;">
+  <div style="text-align: center;"><button round=""></button></div>
+</div>
+`;
+
+exports[`CreateNewTask.vue It renders edit mode 1`] = `
+<div class="create-new-task"><input modelvalue="" type="text" style="">
+  <div style="text-align: center; display: none;"><button round=""></button></div>
+</div>
+`;

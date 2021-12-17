@@ -11,5 +11,5 @@ export default {
     Board,
     EditTask,
   },
-}
+};
 </script>

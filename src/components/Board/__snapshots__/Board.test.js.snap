@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Board.vue renders correctly 1`] = `
+<div class="board">
+  <board-column-stub category="pending" tasks=""></board-column-stub>
+  <board-column-stub category="inprogress" tasks=""></board-column-stub>
+  <board-column-stub category="completed" tasks=""></board-column-stub>
+</div>
+`;

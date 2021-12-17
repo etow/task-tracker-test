@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project.vue renders correctly 1`] = `
+<div class="task">
+  <div>TASK NAME</div>
+</div>
+`;
