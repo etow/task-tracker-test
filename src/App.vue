@@ -1,30 +1,36 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+  <Project />
 </template>
+<script>
+import Project from './views/Project.vue';
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+export default {
+  components: { Project },
+}
+</script>
+
+<style>
+.html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-#nav {
-  padding: 30px;
+#app {
+  height: 100vh;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+/* common modifiers */
+.is-justified-right {
+  margin-left: auto;
+}
+.has-text-centered {
+  text-align: center;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+/* force z-index of message element */
+.el-message {
+  z-index: 99999!important;
 }
 </style>
