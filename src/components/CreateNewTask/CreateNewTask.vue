@@ -38,6 +38,7 @@ export default {
       this.editMode = false;
       // prevent creating task twice (enter + blur);
       if (this.taskCreated) return;
+      // if name is empty, do not create task
       if (trimSpaces(this.task.name) !== '') {
         this.taskCreated = true;
         this.$store.dispatch(CREATE_TASK, this.task)

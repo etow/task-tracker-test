@@ -1,3 +1,5 @@
+/* THIS FILE EMULATES A PROMISE BASED HTTP CLIENT */
+
 import { GET, POST, PUT, DELETE } from './mockServer';
 
 const handleResponse = async (cb) => {

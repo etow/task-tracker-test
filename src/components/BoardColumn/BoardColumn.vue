@@ -33,11 +33,6 @@ import { SET_TASK_TO_EDIT, UPDATE_TASKS, ROLLBACK_STATE } from '../../store/cons
 
 
 export default {
-  data() {
-    return {
-      list: [],
-    };
-  },
   props: {
     category: {
       type: String,
