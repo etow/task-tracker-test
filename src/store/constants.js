@@ -14,3 +14,4 @@ export const CREATE_TASK = 'CREATE_TASK';
 export const UPDATE_TASK = 'UPDATE_TASK';
 export const ROLLBACK_STATE = 'ROLLBACK_STATE';
 export const BACKUP_STATE = 'BACKUP_STATE';
+export const UPDATE_TASKS = 'UPDATE_TASKS';

@@ -6,8 +6,8 @@ describe('Project.vue', () => {
     const wrapper = mount(Task, {
       propsData: {
         task: { name: 'TASK NAME' }
-      }
+      },
     });
     expect(wrapper.html()).toMatchSnapshot();
-  })
-})
+  });
+});

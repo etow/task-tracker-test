@@ -4,7 +4,7 @@ exports[`BoardColumn.vue renders correctly 1`] = `
 <div class="board__column">
   <div class="board__column__header" style="background-color: red;">Planned</div>
   <div class="board__column__body">
-    <draggable-stub itemkey="id" list="" clone="function(t){return t}" tag="div" group="tasks"></draggable-stub>
+    <draggable-stub itemkey="id" clone="function(t){return t}" tag="div" group="tasks"></draggable-stub>
   </div>
 </div>
 `;

@@ -14,6 +14,7 @@ import {
   UPDATE_TASK,
   ROLLBACK_STATE,
   BACKUP_STATE,
+  UPDATE_TASKS,
 } from './constants';
 
 export default {
@@ -30,11 +31,10 @@ export default {
   },
   [CREATE_TASK]: ({ commit, state }, newTask) => {
     commit(BACKUP_STATE, state);
-    const tasksLength = Object.values(state.tasks).reduce((acc, item) => acc + item.length, 0);
     const task = {
       ...newTask,
       id: Math.random().toString(36).substr(2, 6),
-      order: (1 + tasksLength) * 1000,
+      order: state.tasks[newTask.category].length,
     };
     commit(ADD_TASK, task);
     return taskRepository.create(task);
@@ -54,10 +54,21 @@ export default {
     if (targetIndex >= 0) {
       commit(SET_TASK, { task, targetIndex });
     } else {
-      commit(ADD_TASK, task);
+      const order = state.tasks[task.category].length;
+      commit(ADD_TASK, { ...task, order });
     }
     commit(SET_TASK_TO_EDIT, {})
     return taskRepository.update(task);
+  },
+  [UPDATE_TASKS]: ({ commit, state }, { tasks, category }) => {
+    commit(BACKUP_STATE, state);
+    tasks.forEach((task, index) => {
+      task.category = category;
+      task.order = index;
+    });
+    commit(UPDATE_TASKS, { tasks, category });
+
+    return taskRepository.update(tasks);
   },
   [SET_TASK_TO_EDIT]: ({ commit, state}, task) => {
     commit(BACKUP_STATE, state);
@@ -65,5 +76,5 @@ export default {
   },
   [ROLLBACK_STATE]: ({ commit }) => {
     commit(ROLLBACK_STATE);
-  }
-}
+  },
+};

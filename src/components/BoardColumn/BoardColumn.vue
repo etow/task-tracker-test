@@ -5,10 +5,9 @@
     </div>
     <div class="board__column__body">
       <Draggable
-        :list="list"
+        v-model="tasks"
         group="tasks"
-        item-key="id"
-        @change="dragChange">
+        item-key="id">
         <template #item="{ element }">
           <Task
             :key="element.id"
@@ -30,7 +29,7 @@ import Draggable from 'vuedraggable';
 import { ElMessage } from 'element-plus'
 import Task from '../Task/Task.vue';
 import CreateNewTask from '../CreateNewTask/CreateNewTask.vue';
-import { SET_TASK_TO_EDIT, UPDATE_TASK, ROLLBACK_STATE } from '../../store/constants';
+import { SET_TASK_TO_EDIT, UPDATE_TASKS, ROLLBACK_STATE } from '../../store/constants';
 
 
 export default {
@@ -44,62 +43,37 @@ export default {
       type: String,
       required: true,
     },
-    tasks: {
-      type: Array,
-      required: true,
-    },
   },
   components: {
     Task,
     CreateNewTask,
     Draggable,
   },
-  watch: {
-    tasks: {
-      handler(tasks) {
-        this.list = JSON.parse(JSON.stringify(tasks));
-      },
-      deep: true,
-      inmediate: true,
-    }
-  },
   computed: {
     categories() {
       return this.$store.state.categories;
+    },
+    tasks: {
+      get() {
+        return this.$store.state.tasks[this.category];
+      },
+      set(tasks) {
+        this.$store.dispatch(UPDATE_TASKS, { tasks, category: this.category })
+          .catch((err) => {
+            console.error(err.message);
+            ElMessage({
+              message: 'Something went wrong while trying to update the task, please try again',
+              type: 'error',
+              duration: 5000,
+            });
+            this.$store.dispatch(ROLLBACK_STATE);
+          });
+      },
     },
   },
   methods: {
     getCategoryColor(category) {
       return this.categories[category].color;
-    },
-    dragChange(evt) {
-      const action = evt.moved || evt.added;
-      if (action) {
-        const { element: task, newIndex } = action;
-        const prevTask = this.tasks[newIndex - 1];
-        const nextTask = this.tasks[newIndex + 1];
-        if (prevTask) {
-          task.order = prevTask.order + 1;
-        } else if (nextTask) {
-          task.order = nextTask.order - 1;
-        }
-        // update task category
-        const prevCategory = task.category;
-        const taskUpdated = {
-          ...task,
-          category: this.category,
-        }
-
-        this.$store.dispatch(UPDATE_TASK, {task: taskUpdated, prevCategory }).catch((err) => {
-          console.error(err.message);
-          ElMessage({
-            message: 'Something went wrong while trying to update the task, please try again',
-            type: 'error',
-            duration: 5000,
-          });
-          this.$store.dispatch(ROLLBACK_STATE);
-        });
-      }
     },
     setTaskToEdit(task) {
       this.$store.dispatch(SET_TASK_TO_EDIT, task)
@@ -112,7 +86,7 @@ export default {
           });
           this.$store.dispatch(ROLLBACK_STATE);
         });
-    }
+    },
   },
 };
 </script>

@@ -12,7 +12,7 @@ describe('CreateNewTask.vue', () => {
   it('It renders correctly', () => {
     const wrapper = createWrapper();
     expect(wrapper.html()).toMatchSnapshot();
-  })
+  });
 
   it('It renders edit mode', async () => {
     // mock focus
@@ -221,8 +221,7 @@ describe('CreateNewTask.vue', () => {
     expect(actions[ROLLBACK_STATE]).toHaveBeenCalled();
     console.error.mockRestore();
   });
-
-})
+});
 
 // create wrapper helper
 const createWrapper = (decorator = (n) => n) => {

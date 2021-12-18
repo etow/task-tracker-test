@@ -1,6 +1,6 @@
 <template>
   <div class="task">
-    <div> {{ task.name }} </div>
+    <div>{{ task.name }}</div>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
       required: true,
     },
   },
-}
+};
 </script>
 
 <style>

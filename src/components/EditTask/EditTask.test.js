@@ -151,7 +151,6 @@ describe('EditTask.vue', () => {
     console.error.mockRestore();
     expect(wrapper.vm.loading).toBe(false);
   });
-
 });
 
 

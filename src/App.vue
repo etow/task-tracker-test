@@ -6,7 +6,7 @@ import Project from './views/Project.vue';
 
 export default {
   components: { Project },
-}
+};
 </script>
 
 <style>

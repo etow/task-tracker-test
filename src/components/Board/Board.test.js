@@ -58,7 +58,7 @@ describe('Board.vue', () => {
     });
     console.error.mockRestore();
   });
-})
+});
 
 // create wrapper helper
 const createWrapper = (decorator = (n) => n) => {

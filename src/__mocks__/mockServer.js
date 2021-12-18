@@ -22,7 +22,7 @@ if (!localStorage.getItem(DB_KEY)) {
 const getCollection = (collection) => {
   const state = JSON.parse(localStorage.getItem(DB_KEY));
   return [state[collection], state];
-}
+};
 
 const getPathArray = (path) => {
   const pathArray = path.split('/');
@@ -31,28 +31,28 @@ const getPathArray = (path) => {
 
 const save = (state) => {
   localStorage.setItem(DB_KEY, JSON.stringify(state));
-}
+};
 
 const asPromise = (response) => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(response), 500);
-  })
-}
+  });
+};
 
 /**
  * RESPONSES
  */
  const successResponse = (data) => {
   return asPromise({ data, status: 'success' });
-}
+};
 
 const failResponse = (message) => {
   return asPromise({ data: {title: message}, status: 'fail' })
-}
+};
 
 const errorResponse = (err) => {
   return asPromise({ message: err.message, status: 'error'});
-}
+};
 
 /**
  * METHODS
@@ -74,7 +74,7 @@ export const GET = (resourcePath) => {
   } catch (err) {
     return errorResponse(err);
   }
-}
+};
 
 export const POST = (resourcePath, payload) => {
   try {
@@ -90,12 +90,12 @@ export const POST = (resourcePath, payload) => {
   } catch (err) {
     return errorResponse(err);
   }
-}
+};
 
 export const DELETE = (resourcePath) => {
   try {
     const [resource, id] = getPathArray(resourcePath);
-    let [collection, state] = getCollection(resource)
+    let [collection, state] = getCollection(resource);
     if (!collection) {
       return failResponse('Collection not found');
     }
@@ -106,24 +106,33 @@ export const DELETE = (resourcePath) => {
   } catch (err) {
     return errorResponse(err);
   }
-}
+};
 
 export const PUT = (resourcePath, payload) => {
   try {
     const [resource, id] = getPathArray(resourcePath);
+    const [collection, state] = getCollection(resource);
+    if (!collection) {
+      return failResponse('Collection not found');
+    }
     if (id) {
-      const [collection, state] = getCollection(resource)
-      if (!collection) {
-        return failResponse('Collection not found');
-      }
       const itemIndex = collection.findIndex((anItem) => anItem.id === id);
       if (itemIndex >= 0) collection[itemIndex] = payload;
-      save(state)
+      save(state);
       return successResponse(payload);
     } else {
-      return failResponse('Id is required');
+      const ids = payload.map((anItem) => anItem.id);
+      const tasks = collection.filter((anItem) => ids.includes(anItem.id));
+      tasks.forEach((_, index) => {
+        tasks[index].name = payload[index].name;
+        tasks[index].description = payload[index].description;
+        tasks[index].category = payload[index].category;
+        tasks[index].order = payload[index].order;
+      });
+      save(state);
+      return successResponse(tasks);
     }
   } catch (err) {
     return errorResponse(err);
   }
-}
+};

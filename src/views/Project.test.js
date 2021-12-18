@@ -5,5 +5,5 @@ describe('Project.vue', () => {
   it('It renders correctly', () => {
     const wrapper = shallowMount(Project)
     expect(wrapper.html()).toMatchSnapshot();
-  })
-})
+  });
+});

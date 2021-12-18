@@ -8,6 +8,7 @@ import {
   DELETE_TASK,
   ROLLBACK_STATE,
   BACKUP_STATE,
+  UPDATE_TASKS
 } from './constants';
 
 export default {
@@ -41,5 +42,8 @@ export default {
   },
   [BACKUP_STATE]: (state, currentState) => {
     state.prevState = JSON.parse(JSON.stringify(currentState));
-  }
-}
+  },
+  [UPDATE_TASKS]: (state, {tasks, category}) => {
+    state.tasks[category] = tasks;
+  },
+};

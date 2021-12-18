@@ -5,4 +5,4 @@ export default {
   get() {
     return client.get(resource);
   },
-}
+};

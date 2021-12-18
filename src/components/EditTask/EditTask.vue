@@ -75,7 +75,7 @@ export default {
     taskToEdit: {
       handler(task) { this.form = { ...task} },
       inmediate: true,
-    }
+    },
   },
   computed: {
     categories() {
@@ -83,7 +83,7 @@ export default {
     },
     taskToEdit() {
       return this.$store.state.taskToEdit;
-    }
+    },
   },
   methods: {
     handleSave() {
@@ -102,7 +102,7 @@ export default {
           })
           .finally(() => this.loading = false);
         }
-      })
+      });
     },
     handleDelete() {
       this.loading = true;
@@ -122,7 +122,7 @@ export default {
       this.$store.dispatch(SET_TASK_TO_EDIT, {});
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
   /deep/ .form-dialog {
