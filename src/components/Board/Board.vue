@@ -1,5 +1,5 @@
 <template>
-  <div class="board" v-loading="loading">
+  <div class="board">
     <BoardColumn
       v-for="category in Object.keys(tasks)"
       :key="category"
@@ -11,7 +11,7 @@
 <script>
 import BoardColumn from '../BoardColumn/BoardColumn.vue';
 import { FETCH_TASKS_CATEGORIES, FETCH_TASKS, ROLLBACK_STATE } from '../../store/constants';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 
 export default {
   name: "Board",
@@ -29,7 +29,7 @@ export default {
     }
   },
   created() {
-    this.loading = true;
+    this.loading = ElLoading.service();
     this.$store.dispatch(FETCH_TASKS_CATEGORIES)
       .then(() => this.$store.dispatch(FETCH_TASKS))
       .catch((err) => {
@@ -41,7 +41,7 @@ export default {
         });
         this.$store.dispatch(ROLLBACK_STATE);
       })
-      .finally(() => this.loading = false);
+      .finally(() => this.loading.close());
   },
 };
 </script>

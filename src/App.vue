@@ -10,6 +10,8 @@ export default {
 </script>
 
 <style>
+@import "//unpkg.com/element-plus/dist/index.css";
+
 .html, body {
   height: 100%;
   padding: 0;

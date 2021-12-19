@@ -17,7 +17,7 @@
 
 <script>
 import { CREATE_TASK, ROLLBACK_STATE } from '../../store/constants';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElInput, ElButton } from 'element-plus';
 
 export default {
   props: {
@@ -25,6 +25,10 @@ export default {
       type: String,
       required: true,
     },
+  },
+  components: {
+    ElInput,
+    ElButton,
   },
   data() {
     return {

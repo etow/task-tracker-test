@@ -8,7 +8,6 @@
       custom-class="form-dialog"
       center>
       <ElForm
-        v-loading="loading"
         :model="form"
         ref="form"
         :rules="formValidation"
@@ -48,7 +47,7 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElPopconfirm, ElButton } from 'element-plus';
 import { UPDATE_TASK, DELETE_TASK, SET_TASK_TO_EDIT, ROLLBACK_STATE } from '../../store/constants';
 
 export default {
@@ -71,6 +70,16 @@ export default {
       }
     };
   },
+  components: {
+    ElDialog,
+    ElForm,
+    ElFormItem,
+    ElInput,
+    ElSelect,
+    ElOption,
+    ElPopconfirm,
+    ElButton,
+  },
   watch: {
     taskToEdit: {
       handler(task) { this.form = { ...task} },
@@ -89,7 +98,6 @@ export default {
     handleSave() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.loading = true;
           this.$store.dispatch(UPDATE_TASK, { task: this.form, prevCategory: this.taskToEdit.category })
           .catch((err) => {
             console.error(err.message);
@@ -100,7 +108,6 @@ export default {
             });
             this.$store.dispatch(ROLLBACK_STATE);
           })
-          .finally(() => this.loading = false);
         }
       });
     },
@@ -125,7 +132,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-  /deep/ .form-dialog {
+  ::v-deep(.form-dialog) {
     border-radius: 20px;
   }
 </style>
