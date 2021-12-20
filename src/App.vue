@@ -11,12 +11,26 @@ export default {
 
 <style>
 @import "//unpkg.com/element-plus/dist/index.css";
-
-.html, body {
+html, body {
   height: 100%;
   padding: 0;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+body {
+  background: rgb(245,247,248);
+  background: linear-gradient(45deg, rgba(245,247,248,1) 0%, rgba(237,241,242,1) 100%);
+  overflow-x: auto;
 }
 
 #app {
