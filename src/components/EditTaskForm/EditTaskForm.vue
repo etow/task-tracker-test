@@ -131,7 +131,7 @@ export default {
       });
     },
     handleDelete() {
-      this.loading = ElLoading.service();
+      this.loading = ElLoading.service({ target: 'form' });
       this.$store.dispatch(DELETE_TASK, { task: this.form, category: this.taskToEdit.category })
       .catch((err) => {
         console.error(err.message);
