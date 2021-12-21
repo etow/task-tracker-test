@@ -11,7 +11,6 @@ import {
   SET_TASKS,
   ADD_TASK,
   DELETE_TASK,
-  SET_TASK_TO_EDIT,
   SET_TASK,
   FETCH_TASKS_CATEGORIES,
   FETCH_TASKS,
@@ -34,7 +33,6 @@ jest.spyOn(mutations, SET_TASKS);
 jest.spyOn(mutations, ADD_TASK);
 jest.spyOn(mutations, DELETE_TASK);
 jest.spyOn(mutations, UPDATE_TASKS);
-jest.spyOn(mutations, SET_TASK_TO_EDIT);
 jest.spyOn(mutations, SET_TASK);
 jest.spyOn(mutations, ROLLBACK_STATE);
 jest.spyOn(mutations, BACKUP_STATE);
@@ -42,9 +40,9 @@ jest.spyOn(mutations, BACKUP_STATE);
 
 const storeTasks = {
   Planned: [
-    { id: 1, name: 'Task1', category: 'Planned', order: 0 },
-    { id: 2, name: 'Task2', category: 'Planned', order: 1 },
-    { id: 3, name: 'Task3', category: 'Planned', order: 2 }
+    { id: 1, name: 'Task1', category: 'Planned', order: 0, activity: {}, estimate: 0 },
+    { id: 2, name: 'Task2', category: 'Planned', order: 1, activity: {}, estimate: 0 },
+    { id: 3, name: 'Task3', category: 'Planned', order: 2, activity: {}, estimate: 0 },
   ],
   'In Progress': [],
   Completed: [],
@@ -69,9 +67,9 @@ describe('Store Actions', () => {
   it('fetch tasks', async () => {
     const store = mockStore();
     const tasks = [
-      { id: 1, name: 'Task1', category: 'Planned', order: 0 },
-      { id: 2, name: 'Task2', category: 'In Progress', order: 1 },
-      { id: 3, name: 'Task3', color: 'Completed', order: 2 }
+      { id: 1, name: 'Task1', category: 'Planned', order: 0, activity: {}, estimate: 0 },
+      { id: 2, name: 'Task2', category: 'In Progress', order: 1, activity: {}, estimate: 0 },
+      { id: 3, name: 'Task3', color: 'Completed', order: 2, activity: {}, estimate: 0 },
     ];
     taskRepository.get = jest.fn(() => Promise.resolve({ data: tasks }));
     store.dispatch(FETCH_TASKS);
@@ -85,7 +83,6 @@ describe('Store Actions', () => {
     const task = storeTasks.Planned[0];
     store.dispatch(DELETE_TASK, { task, category: task.category });
     expect(mutations[DELETE_TASK]).toHaveBeenCalledWith(expect.anything(), { task, category: task.category });
-    expect(mutations[SET_TASK_TO_EDIT]).toHaveBeenCalledWith(expect.anything(), {});
     expect(store.state.tasks.Planned.length).toEqual(2);
     expect(taskRepository.delete).toHaveBeenCalledWith(task.id);
   });
@@ -100,7 +97,6 @@ describe('Store Actions', () => {
 
       expect(mutations[DELETE_TASK]).toHaveBeenCalledWith(expect.anything(), { task: taskToUpdate, category: taskToDelete.category });
       expect(mutations[ADD_TASK]).toHaveBeenCalledWith(expect.anything(), taskToUpdate);
-      expect(mutations[SET_TASK_TO_EDIT]).toHaveBeenCalledWith(expect.anything(), {});
       expect(taskRepository.update).toHaveBeenCalledWith(taskToUpdate);
     });
 
@@ -109,7 +105,6 @@ describe('Store Actions', () => {
       const taskToUpdate = { ...storeTasks.Planned[0], name: 'new name' };
       store.dispatch(UPDATE_TASK, { task: taskToUpdate });
       expect(mutations[SET_TASK]).toHaveBeenCalledWith(expect.anything(), { task: taskToUpdate, targetIndex: 0 });
-      expect(mutations[SET_TASK_TO_EDIT]).toHaveBeenCalledWith(expect.anything(), {});
       expect(taskRepository.update).toHaveBeenCalledWith(taskToUpdate);
     });
 
@@ -137,6 +132,8 @@ describe('Store Actions', () => {
     const newTask = {
       name: 'new task',
       category: 'Planned',
+      estimate: 0,
+      activity: {},
     }
     store.dispatch(CREATE_TASK, newTask);
     const taskToBeCreated = { ...newTask, id: expect.anything(), order: 3 };

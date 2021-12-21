@@ -54,6 +54,29 @@ describe('BoardColumn.vue', () => {
     expect(actions[SET_TASK_TO_EDIT]).toHaveBeenCalledWith(expect.anything(), tasks[0]);
   });
 
+  it('handless error when setting a task to edit', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    const [store, { actions }] = mockStore({ set_task_to_edit: jest.fn(() => Promise.reject('error'))});
+    const wrapper = createWrapper((dataToMount) => {
+      dataToMount.global.plugins = [store];
+      return dataToMount;
+    });
+
+    wrapper.vm.setTaskToEdit(tasks[0]);
+
+    expect(actions[SET_TASK_TO_EDIT]).toHaveBeenCalledWith(expect.anything(), tasks[0]);
+    await flushPromises();
+
+    expect(console.error).toHaveBeenCalled();
+    expect(ElMessage).toHaveBeenCalledWith({
+      message: 'Something went wrong while trying to edit the task, please try again',
+      type: 'error',
+      duration: 5000,
+    });
+    expect(actions[ROLLBACK_STATE]).toHaveBeenCalled();
+    console.error.mockRestore();
+  });
+
   it('it handles error when updating a task', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
 

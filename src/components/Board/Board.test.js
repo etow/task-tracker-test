@@ -4,8 +4,11 @@ import Board from './Board.vue';
 import { createStore } from 'vuex';
 import { FETCH_TASKS_CATEGORIES, FETCH_TASKS } from '../../store/constants';
 
+let loadingValue = true;
+
 jest.mock('element-plus', () => ({
   ElMessage: jest.fn(),
+  ElLoading: { service: jest.fn(() => ({ close: jest.fn(() => loadingValue = false) })) },
 }));
 
 describe('Board.vue', () => {
@@ -30,12 +33,11 @@ describe('Board.vue', () => {
       return dataToMount;
     });
 
-    expect(wrapper.vm.loading).toBe(true);
     await flushPromises();
     expect(actions[FETCH_TASKS_CATEGORIES]).toHaveBeenCalled();
     expect(actions[FETCH_TASKS]).toHaveBeenCalled();
     await flushPromises();
-    expect(wrapper.vm.loading).toBe(false);
+    expect(loadingValue).toBe(false);
   });
 
   it('handles error if fetch fails',  async () => {

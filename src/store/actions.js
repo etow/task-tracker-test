@@ -15,6 +15,7 @@ import {
   ROLLBACK_STATE,
   BACKUP_STATE,
   UPDATE_TASKS,
+  UPDATE_TASK_ACTIVITY,
 } from './constants';
 
 export default {
@@ -31,44 +32,58 @@ export default {
   },
   [CREATE_TASK]: ({ commit, state }, newTask) => {
     commit(BACKUP_STATE, state);
+
     const task = {
       ...newTask,
       id: Math.random().toString(36).substr(2, 6),
       order: state.tasks[newTask.category].length,
+      estimate: 0,
+      activity: {},
     };
+
     commit(ADD_TASK, task);
-    return taskRepository.create(task);
+
+    return taskRepository.create(task).then((response) => {
+      commit(SET_TASK, {task: response.data });
+    });
   },
   [DELETE_TASK]: ({ commit, state }, {task, category}) => {
     commit(BACKUP_STATE, state);
     commit(DELETE_TASK, {task, category});
-    commit(SET_TASK_TO_EDIT, {});
     return taskRepository.delete(task.id);
   },
   [UPDATE_TASK]: ({ commit, state }, {task, prevCategory}) => {
     commit(BACKUP_STATE, state);
+
     if (prevCategory && task.category !== prevCategory) {
       commit(DELETE_TASK, { task, category: prevCategory });
     }
     const targetIndex = state.tasks[task.category].findIndex((aTask) => aTask.id === task.id);
+
     if (targetIndex >= 0) {
       commit(SET_TASK, { task, targetIndex });
     } else {
       const order = state.tasks[task.category].length;
       commit(ADD_TASK, { ...task, order });
     }
-    commit(SET_TASK_TO_EDIT, {})
-    return taskRepository.update(task);
+
+    return taskRepository.update(task).then((response) => {
+      commit(UPDATE_TASK_ACTIVITY, response.data);
+    });
   },
   [UPDATE_TASKS]: ({ commit, state }, { tasks, category }) => {
     commit(BACKUP_STATE, state);
+
     tasks.forEach((task, index) => {
       task.category = category;
       task.order = index;
     });
+
     commit(UPDATE_TASKS, { tasks, category });
 
-    return taskRepository.update(tasks);
+    return taskRepository.update(tasks).then((response) => {
+      commit(UPDATE_TASK_ACTIVITY, response.data);
+    });
   },
   [SET_TASK_TO_EDIT]: ({ commit, state}, task) => {
     commit(BACKUP_STATE, state);

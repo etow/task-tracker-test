@@ -8,7 +8,8 @@ import {
   DELETE_TASK,
   ROLLBACK_STATE,
   BACKUP_STATE,
-  UPDATE_TASKS
+  UPDATE_TASKS,
+  UPDATE_TASK_ACTIVITY
 } from './constants';
 
 export default {
@@ -29,7 +30,8 @@ export default {
     categories.forEach((cat) => state.categories[cat.name] = cat);
   },
   [SET_TASK]: (state, { task, targetIndex }) => {
-    state.tasks[task.category][targetIndex] = task;
+    const index = targetIndex || state.tasks[task.category].findIndex((aTask) => aTask.id === task.id);
+    state.tasks[task.category][index] = task;
   },
   [SET_TASK_TO_EDIT]: (state, task) => {
     state.taskToEdit = task;
@@ -46,4 +48,13 @@ export default {
   [UPDATE_TASKS]: (state, {tasks, category}) => {
     state.tasks[category] = tasks;
   },
+  [UPDATE_TASK_ACTIVITY]: (state, tasks) => {
+    if (!Array.isArray(tasks)) {
+      tasks = [tasks];
+    }
+    tasks.forEach((task) => {
+      const found = state.tasks[task.category].find((aTask) => aTask.id === task.id);
+      found.activity = task.activity;
+    });
+  }
 };

@@ -1,32 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditTask.vue renders correctly 1`] = `
-<div class="create-new-task-form">
-  <el-dialog-stub model-value="0" show-close="false" before-close="function () { [native code] }" width="30%" custom-class="form-dialog" center="">
-    <el-form-stub model="[object Object]" rules="[object Object]" label-width="120px" label-position="left">
-      <el-form-item-stub label="Name" prop="name">
-        <el-input-stub modelvalue=""></el-input-stub>
-      </el-form-item-stub>
-      <el-form-item-stub label="Description" prop="description">
-        <el-input-stub modelvalue="" type="textarea"></el-input-stub>
-      </el-form-item-stub>
-      <el-form-item-stub label="Status" prop="category">
-        <el-select-stub modelvalue="" style="width: 100%;">
-          <el-option-stub value="Planned"></el-option-stub>
-          <el-option-stub value="In Progress"></el-option-stub>
-          <el-option-stub value="Completed"></el-option-stub>
-        </el-select-stub>
-      </el-form-item-stub>
-      <el-form-item-stub style="margin-left: -120px; padding-top: 20px;">
-        <div style="display: flex; width: 100%;">
-          <el-popconfirm-stub title="Are you sure to delete this task?" hide-icon="true" confirm-button-type="danger"></el-popconfirm-stub>
-          <div style="margin-left: auto;">
-            <el-button-stub>Cancel</el-button-stub>
-            <el-button-stub type="primary">Save</el-button-stub>
-          </div>
-        </div>
-      </el-form-item-stub>
-    </el-form-stub>
+<div>
+  <el-dialog-stub model-value="false" before-close="function () { [native code] }" show-close="false" width="30%" custom-class="form-dialog" center="">
+    <el-tabs-stub modelvalue="edit">
+      <el-tab-pane-stub label="Edit task" name="edit">
+        <edit-task-form-stub></edit-task-form-stub>
+      </el-tab-pane-stub>
+      <el-tab-pane-stub label="Activity" name="activity">
+        <activity-stub></activity-stub>
+      </el-tab-pane-stub>
+    </el-tabs-stub>
   </el-dialog-stub>
 </div>
 `;

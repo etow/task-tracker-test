@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Activity.vue renders tasks Planned and In Progress 1`] = `
+<div class="activity">
+  <div class="activity__item">
+    <div class="activity__key">Planned</div>
+    <div class="activity__time">2 hours, 45 minutes</div>
+  </div>
+  <div class="activity__item">
+    <div class="activity__key">In Progress</div>
+    <div class="activity__time">10 minutes</div>
+  </div>
+  <!--v-if-->
+</div>
+`;
+
+exports[`Activity.vue renders tasks Planned and In Progress and Completed 1`] = `
+<div class="activity">
+  <div class="activity__item">
+    <div class="activity__key">Planned</div>
+    <div class="activity__time">2 hours, 45 minutes</div>
+  </div>
+  <div class="activity__item">
+    <div class="activity__key">In Progress</div>
+    <div class="activity__time">10 minutes</div>
+  </div>
+  <div class="activity__item is-done">Completed ✓ </div>
+</div>
+`;

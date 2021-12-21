@@ -3,5 +3,6 @@
 exports[`Project.vue renders correctly 1`] = `
 <div class="task">
   <div>TASK NAME</div>
+  <!--v-if-->
 </div>
 `;

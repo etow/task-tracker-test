@@ -80,3 +80,11 @@ const trimSpaces = (str) => {
   return trimmed;
 };
 </script>
+<style lang="scss" scoped>
+  ::v-deep(.el-input__inner) {
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 0px 0px 1px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px, rgba(0, 0, 0, 0.05) 0px 2px 8px 0px;
+    height: 58px;
+    line-height: 58px;
+  }
+</style>

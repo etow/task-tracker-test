@@ -1,138 +1,85 @@
 <template>
-  <div class="create-new-task-form">
+  <div>
     <ElDialog
-      :model-value="Object.keys(taskToEdit).length"
+      :model-value="showDialog"
+      :before-close="handleClose"
       :show-close="false"
-      :before-close="handleCancel"
       width="30%"
       custom-class="form-dialog"
       center>
-      <ElForm
-        :model="form"
-        ref="form"
-        :rules="formValidation"
-        label-width="120px"
-        label-position="left">
-        <ElFormItem label="Name" prop="name">
-          <ElInput v-model="form.name" />
-        </ElFormItem>
-        <ElFormItem label="Description" prop="description">
-          <ElInput v-model="form.description" type="textarea" />
-        </ElFormItem>
-        <ElFormItem label="Status" prop="category">
-          <ElSelect v-model="form.category" style="width: 100%">
-            <ElOption v-for="category in categories" :key="category.name" :value="category.name" />
-          </ElSelect>
-        </ElFormItem>
-        <ElFormItem style="margin-left: -120px; padding-top: 20px;">
-          <div style="display: flex;width: 100%;">
-            <ElPopconfirm
-              title="Are you sure to delete this task?"
-              hide-icon="true"
-              confirm-button-type="danger"
-              @confirm="handleDelete">
-              <template #reference>
-                <ElButton type="text" style="color: #f56c6c;">Delete</ElButton>
-              </template>
-            </ElPopconfirm>
-            <div style="margin-left: auto;">
-              <ElButton @click="handleCancel">Cancel</ElButton>
-              <ElButton type="primary" @click="handleSave">Save</ElButton>
-            </div>
-          </div>
-        </ElFormItem>
-      </ElForm>
+      <ElTabs v-model="activeTab">
+        <ElTabPane label="Edit task" name="edit">
+          <EditTaskForm
+            @save="handleClose"
+            @cancel="handleClose"
+            @delete="handleClose" />
+        </ElTabPane>
+        <ElTabPane label="Activity" name="activity">
+          <Activity />
+        </ElTabPane>
+      </ElTabs>
     </ElDialog>
   </div>
 </template>
 
 <script>
-import { ElMessage, ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElPopconfirm, ElButton } from 'element-plus';
-import { UPDATE_TASK, DELETE_TASK, SET_TASK_TO_EDIT, ROLLBACK_STATE } from '../../store/constants';
+import {
+  ElDialog,
+  ElTabs,
+  ElTabPane,
+} from 'element-plus';
+import Activity from '../Activity/Activity.vue';
+import EditTaskForm from '../EditTaskForm/EditTaskForm.vue';
+import { SET_TASK_TO_EDIT } from '../../store/constants';
 
 export default {
   data() {
     return {
-      loading: false,
-      form: {
-        name: '',
-        description: '',
-        category: '',
-      },
-      formValidation: {
-        name: [
-          {
-            required: true,
-            message: 'Name is required',
-            trigger: 'blur',
-          },
-        ],
-      }
+      activeTab: 'edit',
+      showDialog: false,
     };
   },
   components: {
     ElDialog,
-    ElForm,
-    ElFormItem,
-    ElInput,
-    ElSelect,
-    ElOption,
-    ElPopconfirm,
-    ElButton,
+    ElTabs,
+    ElTabPane,
+    Activity,
+    EditTaskForm,
   },
   watch: {
     taskToEdit: {
-      handler(task) { this.form = { ...task} },
+      handler(task) {
+        if (Object.keys(task).length) {
+          this.showDialog = true;
+          this.activeTab = 'edit';
+        }
+      },
       inmediate: true,
     },
   },
   computed: {
-    categories() {
-      return Object.values(this.$store.state.categories);
-    },
     taskToEdit() {
       return this.$store.state.taskToEdit;
     },
   },
   methods: {
-    handleSave() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.$store.dispatch(UPDATE_TASK, { task: this.form, prevCategory: this.taskToEdit.category })
-          .catch((err) => {
-            console.error(err.message);
-            ElMessage({
-              message: 'Something went wrong while trying to save the changes, please try again',
-              type: 'error',
-              duration: 5000,
-            });
-            this.$store.dispatch(ROLLBACK_STATE);
-          })
-        }
+    handleClose() {
+      this.showDialog = false;
+      this.$nextTick(() => {
+        this.$store.dispatch(SET_TASK_TO_EDIT, {});
       });
-    },
-    handleDelete() {
-      this.loading = true;
-      this.$store.dispatch(DELETE_TASK, { task: this.form, category: this.taskToEdit.category })
-      .catch((err) => {
-        console.error(err.message);
-        ElMessage({
-          message: 'Something went wrong while trying to delete the task, please try again',
-          type: 'error',
-          duration: 5000,
-        });
-        this.$store.dispatch(ROLLBACK_STATE);
-      })
-      .finally(() => this.loading = false);
-    },
-    handleCancel() {
-      this.$store.dispatch(SET_TASK_TO_EDIT, {});
     },
   },
 };
 </script>
 <style lang="scss" scoped>
+  ::v-deep(.el-dialog__header) {
+    display: none;
+  }
   ::v-deep(.form-dialog) {
     border-radius: 20px;
+  }
+  ::v-deep(.el-tabs__content) {
+    padding-top: 20px;
   }
 </style>

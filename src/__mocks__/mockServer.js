@@ -1,5 +1,5 @@
 /* THIS FILE EMULATES A BACKEND SERVER */
-
+import { merge } from 'lodash';
 /**
  * INITIALIZE DB
  **/
@@ -8,7 +8,7 @@ const DB = {
   categories: [
     { name: 'Planned', color: '#F288B9' },
     { name: 'In progress', color: '#62B7D9'},
-    { name:'Completed', color: '#58A664' }
+    { name: 'Completed', color: '#58A664', endOfWorkflow: true, }
   ],
   tasks: [],
 }
@@ -84,7 +84,7 @@ export const POST = (resourcePath, payload) => {
     if (!collection) {
       return failResponse('Collection not found');
     }
-
+    logTime(payload);
     collection.push(payload);
     save(state);
     return successResponse(payload);
@@ -118,18 +118,31 @@ export const PUT = (resourcePath, payload) => {
     }
     if (id) {
       const itemIndex = collection.findIndex((anItem) => anItem.id === id);
-      if (itemIndex >= 0) collection[itemIndex] = payload;
+      if (itemIndex == -1) return failResponse('Task not found');
+      const prevState = collection[itemIndex];
+      logTime(payload, prevState);
+      collection[itemIndex] = merge({}, prevState, payload);
       save(state);
-      return successResponse(payload);
+      return successResponse(collection[itemIndex]);
     } else {
+      // collect ids to modify
       const ids = payload.map((anItem) => anItem.id);
-      const tasks = collection.filter((anItem) => ids.includes(anItem.id));
-      tasks.forEach((_, index) => {
-        tasks[index].name = payload[index].name;
-        tasks[index].description = payload[index].description;
-        tasks[index].category = payload[index].category;
-        tasks[index].order = payload[index].order;
+
+      // filter tasks that matches with ids and get their collection index
+      const tasks = collection.reduce((tasks, task, collectionIndex) => {
+        if (ids.includes(task.id)) tasks.push({ task, collectionIndex });
+        return tasks;
+      }, []);
+
+      // uupdate tasks
+      tasks.forEach(({ task, collectionIndex }, taskIndex) => {
+        const prevState = task;
+        const newState = payload.find((aTask) => aTask.id === task.id);
+        logTime(newState, prevState);
+        tasks[taskIndex] = merge({}, prevState, newState);
+        collection[collectionIndex] = tasks[taskIndex];
       });
+
       save(state);
       return successResponse(tasks);
     }
@@ -137,3 +150,27 @@ export const PUT = (resourcePath, payload) => {
     return errorResponse(err);
   }
 };
+
+const logTime  = (newState, prevState) => {
+  if (!prevState) {
+    // initialize time
+    newState.activity[newState.category] = [{ started: Date.now() }];
+  } else if (prevState && prevState.category !== newState.category) {
+    // end record when changing category
+    const length = prevState.activity[prevState.category].length;
+    prevState.activity[prevState.category][length - 1].finished = Date.now();
+
+    // add newState data
+    const activity = merge({}, prevState.activity, newState.activity);
+
+    // initialize activity
+    if (!Array.isArray(activity[newState.category])) {
+      activity[newState.category] = [];
+    }
+    // initialize new category
+    activity[newState.category].push({ started: Date.now() });
+
+    // update activity
+    newState.activity = activity;
+  }
+}
